@@ -1,0 +1,7 @@
+spring:
+  datasource:
+    url: jdbc:mysql://182.92.88.94:3306/xcx-content-center
+    hikari:
+      username: root
+      password: 123456
+      driver-class-name: com.mysql.cj.jdbc.Driver #mysql connect >6
