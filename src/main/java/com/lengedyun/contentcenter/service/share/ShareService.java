@@ -53,15 +53,17 @@ public class ShareService {
 //                .orElseThrow(()-> new IllegalArgumentException("当前吴实例可用"));
 //        log.info("targrtUrl:"+targetUrl);
 
-        //version 客户端负载均衡手动实现
-        List<String> targetUrls = instances.stream()
-                .map(instance->instance.getUri().toString()+"/users/{id}")
-                .collect(Collectors.toList());
-        int i = ThreadLocalRandom.current().nextInt(targetUrls.size());
-        System.out.println(i);
-        log.info("targrtUrl:"+targetUrls.get(i));
+        //version3 客户端负载均衡手动实现
+//        List<String> targetUrls = instances.stream()
+//                .map(instance->instance.getUri().toString()+"/users/{id}")
+//                .collect(Collectors.toList());
+//        int i = ThreadLocalRandom.current().nextInt(targetUrls.size());
+//        System.out.println(i);
+//        log.info("targrtUrl:"+targetUrls.get(i));
+
+        //version4 采用ribbon实现
         UserDto userDto = restTemplate.getForObject(
-                targetUrls.get(i),
+                "http://user-center//users/{id}",
                 UserDto.class,
                 id
         );
