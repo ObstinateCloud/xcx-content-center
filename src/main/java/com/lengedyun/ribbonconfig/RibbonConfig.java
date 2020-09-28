@@ -1,5 +1,6 @@
 package com.lengedyun.ribbonconfig;
 
+import com.lengedyun.contentcenter.config.NacosSameClusterWeightedRule;
 import com.lengedyun.contentcenter.config.NacosWeightedRule;
 import com.netflix.loadbalancer.IPing;
 import com.netflix.loadbalancer.IRule;
@@ -18,9 +19,14 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RibbonConfig {
 
+//    @Bean
+//    public IRule ribbonRule(){
+//        return new NacosWeightedRule();
+//    }
+
     @Bean
     public IRule ribbonRule(){
-        return new NacosWeightedRule();
+        return new NacosSameClusterWeightedRule();
     }
 
     @Bean

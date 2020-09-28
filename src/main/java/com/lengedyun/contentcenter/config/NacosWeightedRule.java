@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @title: NacosWeightedRule
- * @description: 自定义ribbon 支持nacos权重
+ * @description: 自定义ribbon 基于nacos权重规则
  * @auther: 张健云
  * @date: 2020/9/28 22:30
  */

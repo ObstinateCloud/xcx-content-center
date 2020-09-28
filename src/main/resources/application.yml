@@ -17,7 +17,7 @@ spring:
       discovery:
 #        namespace: 21721849-4d73-4de5-8615-973a77605d69
         server-addr: localhost:8848
-#        cluster-name: zjy
+        cluster-name: BJ
 #        metadata:
 #          version: 1.0
 #          switch: off
