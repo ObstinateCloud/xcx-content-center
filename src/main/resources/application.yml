@@ -23,7 +23,7 @@ spring:
 #          switch: off
 server:
   port: 8090
-
+#配置文件优先级高于java代码
 user-center:
   ribbon:
     NFLoadBalancerRulueClassName: com.netflix.loadbalancer.RandomRule
