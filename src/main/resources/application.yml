@@ -23,3 +23,7 @@ spring:
 #          switch: off
 server:
   port: 8090
+
+user-center:
+  ribbon:
+    NFLoadBalancerRulueClassName: com.netflix.loadbalancer.RandomRule

@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
  * @auther: 张健云
  * @date: 2020/9/28 21:21
  */
-@Configuration
-@RibbonClient(name = "user-center",configuration = RibbonConfig.class)
+//@Configuration
+//@RibbonClient(name = "user-center",configuration = RibbonConfig.class)
 public class UserRibbonConfig {
 }
