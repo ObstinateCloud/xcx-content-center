@@ -27,3 +27,8 @@ server:
 user-center:
   ribbon:
     NFLoadBalancerRulueClassName: com.netflix.loadbalancer.RandomRule
+ribbon:
+  eager-load:
+    #多个逗号分隔
+    clients: user-cneter
+    enabled: true #开启饥饿加载，默认懒加载
