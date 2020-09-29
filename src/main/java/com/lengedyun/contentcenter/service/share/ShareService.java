@@ -4,6 +4,7 @@ import com.lengedyun.contentcenter.dao.share.ShareMapper;
 import com.lengedyun.contentcenter.domain.dto.content.ShareDto;
 import com.lengedyun.contentcenter.domain.dto.user.UserDto;
 import com.lengedyun.contentcenter.domain.entity.Share;
+import com.lengedyun.contentcenter.feign.UserCenterFeignClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,9 @@ public class ShareService {
     @Autowired
     DiscoveryClient discoveryClient;
 
+    @Autowired
+    UserCenterFeignClient userCenterFeignClient;
+
     public ShareDto findShareById(Integer id){
         Share share = shareMapper.selectByPrimaryKey(id);
 
@@ -62,11 +66,14 @@ public class ShareService {
 //        log.info("targrtUrl:"+targetUrls.get(i));
 
         //version4 采用ribbon实现
-        UserDto userDto = restTemplate.getForObject(
-                "http://user-center//users/{id}",
-                UserDto.class,
-                id
-        );
+//        UserDto userDto = restTemplate.getForObject(
+//                "http://user-center//users/{id}",
+//                UserDto.class,
+//                id
+//        );
+
+        //version5 采用feign
+        UserDto userDto = userCenterFeignClient.findById(id);
 
         ShareDto shareDto = new ShareDto();
         //使用spring bean拷贝
