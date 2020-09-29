@@ -1,5 +1,6 @@
 package com.lengedyun.ribbonconfig;
 
+import com.lengedyun.contentcenter.config.NacosMetaDataVersionControlRule;
 import com.lengedyun.contentcenter.config.NacosSameClusterWeightedRule;
 import com.lengedyun.contentcenter.config.NacosWeightedRule;
 import com.netflix.loadbalancer.IPing;
@@ -24,9 +25,14 @@ public class RibbonConfig {
 //        return new NacosWeightedRule();
 //    }
 
+//    @Bean
+//    public IRule ribbonRule(){
+//        return new NacosSameClusterWeightedRule();
+//    }
+
     @Bean
     public IRule ribbonRule(){
-        return new NacosSameClusterWeightedRule();
+        return new NacosMetaDataVersionControlRule();
     }
 
     @Bean

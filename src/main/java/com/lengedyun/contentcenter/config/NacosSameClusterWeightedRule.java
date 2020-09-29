@@ -46,7 +46,7 @@ public class NacosSameClusterWeightedRule extends AbstractLoadBalancerRule {
 
         //拿到服务发现相关api
         try {
-            List<Instance> instances = nacosDiscoveryProperties.namingServiceInstance().selectInstances("user-center", true);
+            List<Instance> instances = nacosDiscoveryProperties.namingServiceInstance().selectInstances(name, true);
             //过滤出相同集群下所有的实例
             List<Instance> sameClusterInsts = instances.stream().filter(inst -> Objects.equals(inst.getClusterName(), clusterName)).collect(Collectors.toList());
             List<Instance> chosen = new ArrayList<>();

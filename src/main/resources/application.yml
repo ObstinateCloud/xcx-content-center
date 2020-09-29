@@ -18,9 +18,9 @@ spring:
 #        namespace: 21721849-4d73-4de5-8615-973a77605d69
         server-addr: localhost:8848
         cluster-name: BJ
-#        metadata:
-#          version: 1.0
-#          switch: off
+        metadata:
+          version: v1
+          target-version: v1
 server:
   port: 8090
 #配置文件优先级高于java代码
