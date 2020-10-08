@@ -15,5 +15,5 @@ import org.springframework.web.bind.annotation.GetMapping;
 public interface TestUserCenterFeignClient {
 
     @GetMapping("userTest/getReqMuiltArgs")
-    public UserDto getReqMuiltArgs(@SpringQueryMap UserDto userDto);//feign多参数调用
+    UserDto getReqMuiltArgs(@SpringQueryMap UserDto userDto);//feign多参数调用
 }

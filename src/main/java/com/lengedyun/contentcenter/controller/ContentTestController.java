@@ -1,6 +1,7 @@
 package com.lengedyun.contentcenter.controller;
 
 import com.lengedyun.contentcenter.domain.dto.user.UserDto;
+import com.lengedyun.contentcenter.feign.TestBaiduFeignClient;
 import com.lengedyun.contentcenter.feign.TestUserCenterFeignClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,8 +21,16 @@ public class ContentTestController {
     @Autowired
     TestUserCenterFeignClient userCenterFeignClient;
 
+    @Autowired
+    TestBaiduFeignClient testBaiduFeignClient;
+
     @GetMapping("getReqMuiltArgs")
     public UserDto query(UserDto userDto){
         return userCenterFeignClient.getReqMuiltArgs(userDto);
+    }
+
+    @GetMapping("reqBaidu")
+    public String index(){
+       return testBaiduFeignClient.index();
     }
 }
