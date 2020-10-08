@@ -21,6 +21,8 @@ spring:
         metadata:
           version: v1
           target-version: v1
+  main:
+    allow-bean-definition-overriding: true #允许bean重名
 server:
   port: 8090
 #配置文件优先级高于java代码
