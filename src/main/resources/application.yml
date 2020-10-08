@@ -38,3 +38,12 @@ ribbon:
 logging:
   level:
     com.lengedyun.contentcenter.feign.UserCenterFeignClient: debug
+feign:
+  client:
+    config:
+      default:
+        loggerLevel: full  #生产建议使用BASIC
+  httpclient:
+    enabled: true
+    max-connections: 200
+    max-connections-per-route: 50
