@@ -21,6 +21,13 @@ spring:
         metadata:
           version: v1
           target-version: v1
+    sentinel:
+      transport:
+        #指定sentinel控制台地址
+        dashboard: localhost:8080
+      filter:
+        #关掉对springMVC端点的保护
+        enabled: false
   main:
     allow-bean-definition-overriding: true #允许bean重名
 server:
@@ -47,3 +54,11 @@ feign:
     enabled: true
     max-connections: 200
     max-connections-per-route: 50
+
+#actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
