@@ -1,11 +1,14 @@
 package com.lengedyun.contentcenter.service.share;
 
 import com.lengedyun.contentcenter.dao.share.ShareMapper;
+import com.lengedyun.contentcenter.domain.dto.ShareAuditDto;
 import com.lengedyun.contentcenter.domain.dto.content.ShareDto;
+import com.lengedyun.contentcenter.domain.dto.messaging.UserAddBonusMsgDto;
 import com.lengedyun.contentcenter.domain.dto.user.UserDto;
 import com.lengedyun.contentcenter.domain.entity.Share;
 import com.lengedyun.contentcenter.feign.UserCenterFeignClient;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
@@ -14,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
@@ -38,6 +42,9 @@ public class ShareService {
 
     @Autowired
     UserCenterFeignClient userCenterFeignClient;
+
+    @Autowired
+    RocketMQTemplate rocketMQTemplate;
 
     public ShareDto findShareById(Integer id){
         Share share = shareMapper.selectByPrimaryKey(id);
@@ -80,5 +87,29 @@ public class ShareService {
         BeanUtils.copyProperties(share,shareDto);
         shareDto.setWxNickname(userDto.getWxNickname());
         return shareDto;
+    }
+
+    public Share shareAudit(Integer id, ShareAuditDto shareAuditDto) {
+        Share share = shareMapper.selectByPrimaryKey(id);
+        if(share == null){
+            throw new IllegalArgumentException("参数非法，分享不存在");
+        }
+        if(Objects.equals("NOT_YET",shareAuditDto.getAuditStatusEnum().toString())){
+            throw new IllegalArgumentException("参数非法，该分享无法审核");
+        }
+        share.setAuditStatus(shareAuditDto.getAuditStatusEnum().toString());
+        share.setReason(shareAuditDto.getReason());
+        this.shareMapper.updateByPrimaryKey(share);
+
+        //给发布人加积分
+        this.rocketMQTemplate.convertAndSend("add-bonus",
+                UserAddBonusMsgDto.builder()
+                        .userId(share.getUserId())
+                        .bonus(50)
+                        .build()
+        );
+        return share;
+
+
     }
 }
