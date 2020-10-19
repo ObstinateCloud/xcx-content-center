@@ -143,7 +143,7 @@ public class ShareService {
         return share;
     }
 
-//    @Transactional(rollbackFor = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     public void auditShareByIdInDB(Integer id,ShareAuditDto shareAuditDto){
 
         Share build = Share.builder()
