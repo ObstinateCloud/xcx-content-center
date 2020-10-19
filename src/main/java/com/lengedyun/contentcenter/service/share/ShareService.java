@@ -1,23 +1,31 @@
 package com.lengedyun.contentcenter.service.share;
 
+import com.lengedyun.contentcenter.dao.log.RocketmqTransactionLogMapper;
 import com.lengedyun.contentcenter.dao.share.ShareMapper;
 import com.lengedyun.contentcenter.domain.dto.ShareAuditDto;
 import com.lengedyun.contentcenter.domain.dto.content.ShareDto;
 import com.lengedyun.contentcenter.domain.dto.messaging.UserAddBonusMsgDto;
 import com.lengedyun.contentcenter.domain.dto.user.UserDto;
+import com.lengedyun.contentcenter.domain.entity.RocketmqTransactionLog;
 import com.lengedyun.contentcenter.domain.entity.Share;
+import com.lengedyun.contentcenter.domain.enums.AuditStatusEnum;
 import com.lengedyun.contentcenter.feign.UserCenterFeignClient;
+import lombok.extern.log4j.Log4j;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
+import org.apache.rocketmq.spring.support.RocketMQHeaders;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
@@ -45,6 +53,9 @@ public class ShareService {
 
     @Autowired
     RocketMQTemplate rocketMQTemplate;
+
+    @Autowired
+    RocketmqTransactionLogMapper rocketmqTransactionLogMapper;
 
     public ShareDto findShareById(Integer id){
         Share share = shareMapper.selectByPrimaryKey(id);
@@ -94,22 +105,69 @@ public class ShareService {
         if(share == null){
             throw new IllegalArgumentException("参数非法，分享不存在");
         }
-        if(Objects.equals("NOT_YET",shareAuditDto.getAuditStatusEnum().toString())){
+        if(!Objects.equals("NOT_YET",share.getAuditStatus())){
             throw new IllegalArgumentException("参数非法，该分享无法审核");
         }
-        share.setAuditStatus(shareAuditDto.getAuditStatusEnum().toString());
-        share.setReason(shareAuditDto.getReason());
-        this.shareMapper.updateByPrimaryKey(share);
 
-        //给发布人加积分
-        this.rocketMQTemplate.convertAndSend("add-bonus",
-                UserAddBonusMsgDto.builder()
-                        .userId(share.getUserId())
-                        .bonus(50)
-                        .build()
-        );
+        if(AuditStatusEnum.PASS.equals(shareAuditDto.getAuditStatusEnum())){
+
+            //给发布人加积分
+//        //方式1 普通消息
+//        this.rocketMQTemplate.convertAndSend("add-bonus",
+//                UserAddBonusMsgDto.builder()
+//                        .userId(share.getUserId())
+//                        .bonus(50)
+//                        .build()
+//        );
+            String transactionId = UUID.randomUUID().toString();
+            //方式2 事务消息
+            this.rocketMQTemplate.sendMessageInTransaction(
+                    "add-bonus",
+                    MessageBuilder.withPayload(
+                            UserAddBonusMsgDto.builder()
+                            .userId(share.getUserId())
+                            .bonus(50)
+                            .build()
+                    )
+                    .setHeader(RocketMQHeaders.TRANSACTION_ID,transactionId)
+                    .setHeader("share_id",id)
+                    .build(),
+                    shareAuditDto
+                    );
+
+        }else {
+            this.auditShareByIdInDB(id,shareAuditDto);
+        }
+
+
         return share;
+    }
 
+//    @Transactional(rollbackFor = Exception.class)
+    public void auditShareByIdInDB(Integer id,ShareAuditDto shareAuditDto){
+
+        Share build = Share.builder()
+                .id(id)
+                .auditStatus(shareAuditDto.getAuditStatusEnum().toString())
+                .reason(shareAuditDto.getReason())
+                .build();
+
+        this.shareMapper.updateByPrimaryKeySelective(build);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void auditShareByIdInDBWithLog(Integer id,ShareAuditDto shareAuditDto,String transactionId){
+
+       this.auditShareByIdInDB(id,shareAuditDto);
+
+       this.rocketmqTransactionLogMapper.insert(
+               RocketmqTransactionLog.builder()
+                       .transactionId(transactionId)
+                       .logContent("分享审核")
+                       .build()
+       );
+
+        System.out.println("执行完成");
 
     }
 }
