@@ -1,5 +1,6 @@
 package com.lengedyun.contentcenter.controller;
 
+import com.lengedyun.contentcenter.auth.CheckLogin;
 import com.lengedyun.contentcenter.domain.dto.content.ShareDto;
 import com.lengedyun.contentcenter.domain.entity.Share;
 import com.lengedyun.contentcenter.service.share.ShareService;
@@ -26,6 +27,7 @@ public class ShareController {
     private ShareService shareService;
 
     @GetMapping("/{id}")
+    @CheckLogin
     public ShareDto findById(@PathVariable Integer id){
         return shareService.findShareById(id);
     }
