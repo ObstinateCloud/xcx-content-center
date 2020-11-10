@@ -5,10 +5,7 @@ import com.lengedyun.contentcenter.domain.dto.content.ShareDto;
 import com.lengedyun.contentcenter.domain.entity.Share;
 import com.lengedyun.contentcenter.service.share.ShareService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 
@@ -28,8 +25,8 @@ public class ShareController {
 
     @GetMapping("/{id}")
     @CheckLogin
-    public ShareDto findById(@PathVariable Integer id){
-        return shareService.findShareById(id);
+    public ShareDto findById(@PathVariable Integer id,@RequestHeader("X-token")String  token){
+        return shareService.findShareById(id,token);
     }
 
 }

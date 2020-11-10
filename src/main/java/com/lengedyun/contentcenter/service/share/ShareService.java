@@ -57,7 +57,7 @@ public class ShareService {
     @Autowired
     RocketmqTransactionLogMapper rocketmqTransactionLogMapper;
 
-    public ShareDto findShareById(Integer id){
+    public ShareDto findShareById(Integer id,String token){
         Share share = shareMapper.selectByPrimaryKey(id);
 
         List<ServiceInstance> instances = discoveryClient.getInstances("user-center");
@@ -91,7 +91,7 @@ public class ShareService {
 //        );
 
         //version5 采用feign
-        UserDto userDto = userCenterFeignClient.findById(id);
+        UserDto userDto = userCenterFeignClient.findById(id,token);
 
         ShareDto shareDto = new ShareDto();
         //使用spring bean拷贝
