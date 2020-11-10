@@ -18,5 +18,5 @@ public interface UserCenterFeignClient {
 
     //token传递方式1 springmvc RequestHeader注解
     @RequestMapping("/users/{id}")
-    UserDto findById(@PathVariable Integer id, @RequestHeader("X-token")String  token);
+    UserDto findById(@PathVariable Integer id);
 }

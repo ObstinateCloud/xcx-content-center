@@ -50,6 +50,8 @@ feign:
     config:
       default:
         loggerLevel: full  #生产建议使用BASIC
+        requestInterceptors:
+          - com.lengedyun.contentcenter.feign.interceptor.TokenRelayRequestInterceptor
   httpclient:
     enabled: true
     max-connections: 200

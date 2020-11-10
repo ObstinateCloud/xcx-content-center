@@ -25,8 +25,8 @@ public class ShareController {
 
     @GetMapping("/{id}")
     @CheckLogin
-    public ShareDto findById(@PathVariable Integer id,@RequestHeader("X-token")String  token){
-        return shareService.findShareById(id,token);
+    public ShareDto findById(@PathVariable Integer id){
+        return shareService.findShareById(id);
     }
 
 }
