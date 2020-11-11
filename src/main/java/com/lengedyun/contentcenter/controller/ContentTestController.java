@@ -75,4 +75,16 @@ public class ContentTestController {
                 userId
         );
     }
+
+    /*
+     * restTemplate interceptor方式实现toekn传递
+     * */
+    @GetMapping("tokenRelayInterceptor/{userId}")
+    public ResponseEntity<UserDto> tokenRelayInterceptor(@PathVariable Integer userId){
+        return this.restTemplate.getForEntity(
+                "http://user-center/users/{userId}",
+                UserDto.class,
+                userId
+        );
+    }
 }
