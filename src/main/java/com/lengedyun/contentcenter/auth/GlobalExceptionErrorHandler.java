@@ -31,7 +31,7 @@ public class GlobalExceptionErrorHandler {
          //版本2
         ResponseEntity<ErrorBody> responseEntity = new ResponseEntity<ErrorBody>(
                 ErrorBody.builder()
-                        .body("token不合法,禁止访问")
+                        .body(e.getMessage())
                         .errorCode(HttpStatus.UNAUTHORIZED.value())
                         .build()
                 , HttpStatus.UNAUTHORIZED);

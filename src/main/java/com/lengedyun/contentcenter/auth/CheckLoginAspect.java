@@ -21,8 +21,8 @@ import javax.servlet.http.HttpServletRequest;
  * @date: 2020/11/6 7:29
  */
 
-@Component
-@Aspect
+//@Component
+//@Aspect
 public class CheckLoginAspect {
 
     @Autowired

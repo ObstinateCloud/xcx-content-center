@@ -1,5 +1,6 @@
 package com.lengedyun.contentcenter.controller;
 
+import com.lengedyun.contentcenter.auth.CheckAuthorization;
 import com.lengedyun.contentcenter.domain.dto.ShareAuditDto;
 import com.lengedyun.contentcenter.domain.entity.Share;
 import com.lengedyun.contentcenter.service.share.ShareService;
@@ -23,6 +24,7 @@ public class AdminShareController {
     ShareService shareService;
 
     @PutMapping("audit/{id}")
+    @CheckAuthorization("admin")//admin角色可以访问
     public Share shareAudit(@PathVariable Integer id, @RequestBody ShareAuditDto shareAuditDto){
         return shareService.shareAudit(id,shareAuditDto);
     }
