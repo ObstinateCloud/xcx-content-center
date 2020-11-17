@@ -10,8 +10,8 @@ spring:
         username: root
         password: zjy123
         driver-class-name: com.mysql.cj.jdbc.Driver #mysql connect >6
-  application:
-    name: content-center
+#  application:
+#    name: content-center
   cloud:
     nacos:
       discovery:
@@ -69,4 +69,7 @@ rocketmq:
   producer:
     #必须指定group
     group: test-group
+
+#your:
+#  config: zjy
 
