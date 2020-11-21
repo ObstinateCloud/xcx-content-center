@@ -12,6 +12,12 @@ spring:
         driver-class-name: com.mysql.cj.jdbc.Driver #mysql connect >6
 #  application:
 #    name: content-center
+  zipkin:
+    base-url: http://localhost:9411
+  sleuth:
+    sampler:
+        #抽样率 默认0.1
+      probability: 1.0
   cloud:
     nacos:
       discovery:

@@ -6,6 +6,7 @@ import com.lengedyun.contentcenter.feign.TestUserCenterFeignClient;
 import com.lengedyun.contentcenter.service.TestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -26,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 @RestController
 @RequestMapping("contentTest")
+@RefreshScope //nacos管理的配置属性动态刷新
 public class ContentTestController {
 
     @Autowired

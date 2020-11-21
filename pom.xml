@@ -115,6 +115,18 @@
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
         </dependency>
+
+        <!--集成sleuth-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.springframework.cloud</groupId>-->
+        <!--            <artifactId>spring-cloud-starter-sleuth</artifactId>-->
+        <!--        </dependency>-->
+
+        <!--集成zipkin 可以去掉sleuth了-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-zipkin</artifactId>
+        </dependency>
     </dependencies>
 
     <!--整合spring-cloud阿里巴巴-->
