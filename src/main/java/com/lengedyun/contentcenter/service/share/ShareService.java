@@ -1,5 +1,7 @@
 package com.lengedyun.contentcenter.service.share;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.lengedyun.contentcenter.dao.log.RocketmqTransactionLogMapper;
 import com.lengedyun.contentcenter.dao.share.ShareMapper;
 import com.lengedyun.contentcenter.domain.dto.ShareAuditDto;
@@ -173,5 +175,13 @@ public class ShareService {
 
         System.out.println("执行完成");
 
+    }
+
+    public PageInfo<Share> q(String title, Integer pageNum, Integer pageSize) {
+//        1.PageHelper 切入sql语句加上分页sql
+        PageHelper.startPage(pageNum,pageSize);
+//        2.编写不分页sql
+        List<Share> shares = this.shareMapper.selectByParam(title);
+        return new PageInfo<>(shares);
     }
 }

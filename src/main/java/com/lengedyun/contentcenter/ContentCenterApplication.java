@@ -11,7 +11,7 @@ import tk.mybatis.spring.annotation.MapperScan;
 
 import java.util.Collections;
 
-@MapperScan("com.lengedyun.contentcenter")
+@MapperScan("com.lengedyun.contentcenter.dao.*")
 @SpringBootApplication
 @EnableFeignClients
 public class ContentCenterApplication {

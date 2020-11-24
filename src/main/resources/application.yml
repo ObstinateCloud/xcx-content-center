@@ -51,6 +51,7 @@ ribbon:
 logging:
   level:
     com.lengedyun.contentcenter.feign.UserCenterFeignClient: debug
+    com.lengedyun.contentcenter.dao: debug
 feign:
   client:
     config:
