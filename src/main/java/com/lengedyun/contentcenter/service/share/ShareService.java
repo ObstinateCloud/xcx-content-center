@@ -3,11 +3,14 @@ package com.lengedyun.contentcenter.service.share;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.lengedyun.contentcenter.dao.log.RocketmqTransactionLogMapper;
+import com.lengedyun.contentcenter.dao.share.MidUserShareMapper;
 import com.lengedyun.contentcenter.dao.share.ShareMapper;
 import com.lengedyun.contentcenter.domain.dto.ShareAuditDto;
 import com.lengedyun.contentcenter.domain.dto.content.ShareDto;
 import com.lengedyun.contentcenter.domain.dto.messaging.UserAddBonusMsgDto;
+import com.lengedyun.contentcenter.domain.dto.user.UserAddBonusDto;
 import com.lengedyun.contentcenter.domain.dto.user.UserDto;
+import com.lengedyun.contentcenter.domain.entity.MidUserShare;
 import com.lengedyun.contentcenter.domain.entity.RocketmqTransactionLog;
 import com.lengedyun.contentcenter.domain.entity.Share;
 import com.lengedyun.contentcenter.domain.enums.AuditStatusEnum;
@@ -25,6 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -59,6 +63,9 @@ public class ShareService {
 
     @Autowired
     RocketmqTransactionLogMapper rocketmqTransactionLogMapper;
+
+    @Autowired
+    MidUserShareMapper midUserShareMapper;
 
     public ShareDto findShareById(Integer id) {
         Share share = shareMapper.selectByPrimaryKey(id);
@@ -179,9 +186,54 @@ public class ShareService {
 
     public PageInfo<Share> q(String title, Integer pageNum, Integer pageSize) {
 //        1.PageHelper 切入sql语句加上分页sql
-        PageHelper.startPage(pageNum,pageSize);
+        PageHelper.startPage(pageNum, pageSize);
 //        2.编写不分页sql
         List<Share> shares = this.shareMapper.selectByParam(title);
         return new PageInfo<>(shares);
+    }
+
+    public Share exchangeById(Integer shareId, HttpServletRequest request) {
+        //1.根据id查询share,校验是否存在
+        Share share = this.shareMapper.selectByPrimaryKey(shareId);
+        if (share == null) {
+            throw new IllegalArgumentException("该分享不存在");
+        }
+        ;
+        //2.拿到用户id
+        Integer userId = (Integer) request.getAttribute("id");
+        //3.判断用户是否兑换过
+        MidUserShare midUserShare = midUserShareMapper.selectOne(
+                MidUserShare.
+                        builder().
+                        shareId(shareId).
+                        userId(userId).
+                        build()
+        );
+        if (midUserShare != null) {
+            return share;
+        }
+        //4.兑换分享扣减积分，并记录
+        UserDto userDto = this.userCenterFeignClient.findById(userId);
+        if (userDto.getBonus() < share.getPrice()) {//判断积分是否足够
+            throw new IllegalArgumentException("积分不足");
+        }
+        Integer result = this.userCenterFeignClient.addUserBonus(UserAddBonusDto.builder()
+                .bonus(0 - share.getPrice())
+                .userId(userId)
+                .event("exchange")
+                .description("积分兑换分享")
+                .build()
+        );
+        //5.生成兑换记录
+        if(result != 1){
+            throw new IllegalArgumentException("兑换失败");
+        }
+        midUserShareMapper.insert(
+                MidUserShare.builder()
+                        .shareId(shareId)
+                        .userId(userId)
+                        .build()
+        );
+        return share;
     }
 }

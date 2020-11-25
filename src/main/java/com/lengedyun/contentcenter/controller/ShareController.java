@@ -8,6 +8,8 @@ import com.lengedyun.contentcenter.service.share.ShareService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * @title: TestController
  * @description: TODO
@@ -45,6 +47,15 @@ public class ShareController {
         }
 
         return this.shareService.q(title,pageNum,pageSize);
+    }
+
+    @GetMapping("exchange/{id}")
+    @CheckLogin
+    public Share exchangeById(Integer id, HttpServletRequest request){
+
+
+
+        return this.shareService.exchangeById(id,request);
     }
 
 }

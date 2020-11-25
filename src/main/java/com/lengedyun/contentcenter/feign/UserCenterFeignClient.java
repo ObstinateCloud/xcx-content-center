@@ -1,9 +1,11 @@
 package com.lengedyun.contentcenter.feign;
 
 import com.lengedyun.contentcenter.config.UserCenterFeignConfig;
+import com.lengedyun.contentcenter.domain.dto.user.UserAddBonusDto;
 import com.lengedyun.contentcenter.domain.dto.user.UserDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -19,4 +21,7 @@ public interface UserCenterFeignClient {
     //token传递方式1 springmvc RequestHeader注解
     @RequestMapping("/users/{id}")
     UserDto findById(@PathVariable Integer id);
+
+    @PutMapping("/users/addUserBonus")
+    Integer addUserBonus(UserAddBonusDto build);
 }
